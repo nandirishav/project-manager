@@ -10,18 +10,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User = {
-  id String @id @default(uuid())
+model User {
+  id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  email String 
+  email     String
   firstName String
-  lastName String
-  password String
+  lastName  String
+  password  String
+  projects  Project[]
+  tasks     Task[]
 }
 
-model Project = {
+//Index is used to quicken the search by reducing the number of records to search for.
+
+model Project {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -32,9 +36,36 @@ model Project = {
   name        String
   description String?
   due         DateTime?
-  tasks        Task[]
-  deleted     Boolean   @default(false)
+  tasks       Task[]
+  deleted     Boolean   @default(false) //for soft delete purposes
 
   @@unique([ownerId, name])
-  @@index([ownerId, id])
+  @@index([ownerId, id]) //find a project that belongs to this owner [ownerId] but has this id [id]
+}
+
+enum TASK_STATUS {
+  NOT_STARTED
+  STARTED
+  COMPLETED
+}
+
+model Task {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id])
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id])
+
+  status      TASK_STATUS @default(NOT_STARTED)
+  name        String
+  description String
+
+  due     DateTime?
+  deleted Boolean   @default(false) //for soft delete purposes
+
+  @@index([ownerId])
 }
