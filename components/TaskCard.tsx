@@ -56,7 +56,7 @@ const TaskCard = async ({tasks, title}) => {
             ))}
           </div>
         ) : (
-          <div>no tasks</div>
+          <div>No tasks</div>
         )}
       </div>
     </Card>
