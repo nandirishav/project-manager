@@ -5,6 +5,7 @@ import GlassPane from "@/components/GlassPane";
 
 const inter = Inter({
   variable: "--font-inter",
+  subsets: ['latin']
 });
 
 export default function DashboardRootLayout({ children }) {
